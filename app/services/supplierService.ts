@@ -1,4 +1,6 @@
-import { SupplierOneService } from "./suppliers/supplierOne";
+import { ACMESupplier } from "./suppliers/acme";
+import { PaperfliesSupplier } from "./suppliers/paperflies";
+import { PatagoniaSupplier } from "./suppliers/patagonia";
 
 interface Location {
   lat: number;
@@ -34,7 +36,7 @@ export interface SupplierOutput {
 }
 
 export class SupplierService {
-  suppliers = [SupplierOneService];
+  suppliers = [ACMESupplier, PatagoniaSupplier, PaperfliesSupplier];
 
   async getTransformedData(): Promise<SupplierOutput[]> {
     const transformedData = await Promise.all(

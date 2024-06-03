@@ -5,7 +5,7 @@ import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
 
 import { server } from "../../../mocks/server";
 
-import { SupplierOneService } from "./supplierOne";
+import { ACMESupplier } from "./acme";
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 afterEach(() => server.resetHandlers());
@@ -36,6 +36,7 @@ describe("SupplierService", () => {
                 "BusinessCenter",
                 "WiFi",
                 "DryCleaning",
+                "aircon",
                 "Breakfast",
               ],
             },
@@ -44,7 +45,7 @@ describe("SupplierService", () => {
       ),
     );
 
-    const service = new SupplierOneService();
+    const service = new ACMESupplier();
     const result = await service.getTransformedData();
 
     expect(result).toEqual([
@@ -64,20 +65,12 @@ describe("SupplierService", () => {
         amenities: {
           general: [
             "pool",
-            "businesscenter",
+            "business center",
             "wifi",
-            "drycleaning",
+            "dry cleaner",
             "breakfast",
           ],
-          room: [
-            "aircon",
-            "tv",
-            "coffee machine",
-            "kettle",
-            "hair dryer",
-            "iron",
-            "bathtub",
-          ],
+          room: ["air conditioner"],
         },
         images: {
           rooms: [],
@@ -106,7 +99,7 @@ describe("SupplierService", () => {
       ),
     );
 
-    const service = new SupplierOneService();
+    const service = new ACMESupplier();
 
     await expect(service.getTransformedData()).rejects.toThrowError();
   });
