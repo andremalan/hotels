@@ -7,6 +7,27 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+  // namespace = "PrismaJson"
+  // clientOutput = "<finds it automatically>"
+  // (./ -> relative to schema, or an importable path to require() it)
+}
+
+model Hotel {
+  id            String    @id @default(cuid())
+  destinationId Int
+  name          String
+  description   String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  /// [HotelData]
+  data          Json
+
+  @@index([id])
+  @@index([destinationId])
+}
+
 model User {
   id    String @id @default(cuid())
   email String @unique

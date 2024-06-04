@@ -1,3 +1,7 @@
+import { Prisma } from "@prisma/client";
+
+import { prisma } from "~/db.server";
+
 import { ACMESupplier } from "./suppliers/acme";
 import { PaperfliesSupplier } from "./suppliers/paperflies";
 import { PatagoniaSupplier } from "./suppliers/patagonia";
@@ -35,6 +39,14 @@ export interface SupplierOutput {
   booking_conditions: string[];
 }
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace PrismaJson {
+    // you can use classes, interfaces, types, etc.
+    type HotelData = SupplierOutput;
+  }
+}
+
 export class SupplierService {
   suppliers = [ACMESupplier, PatagoniaSupplier, PaperfliesSupplier];
 
@@ -47,5 +59,29 @@ export class SupplierService {
       }),
     );
     return transformedData.flat();
+  }
+  async saveHotelsToDatabase(hotels: Record<string, SupplierOutput>) {
+    for (const hotelId in hotels) {
+      const hotel = hotels[hotelId];
+      await prisma.hotel.upsert({
+        where: { id: hotel.id },
+        update: {
+          destinationId: hotel.destination_id,
+          name: hotel.name,
+          description: hotel.description,
+          updatedAt: new Date(),
+          data: hotel as unknown as Prisma.JsonObject,
+        },
+        create: {
+          id: hotel.id,
+          destinationId: hotel.destination_id,
+          name: hotel.name,
+          description: hotel.description,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          data: hotel as unknown as Prisma.JsonObject,
+        },
+      });
+    }
   }
 }
