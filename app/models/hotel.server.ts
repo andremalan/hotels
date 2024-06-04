@@ -1,6 +1,16 @@
 import { prisma } from "~/db.server";
+import { SupplierOutput } from "~/models/supplier";
+import { mergeHotels } from "~/services/supplier/mergeHotels";
 import { SupplierService } from "~/services/supplierService";
-import { mergeHotels } from "~/utilities/mergeHotels";
+
+// Required to get JSON output typed correctly for Prisma.
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace PrismaJson {
+    // you can use classes, interfaces, types, etc.
+    type HotelData = SupplierOutput;
+  }
+}
 
 export class Hotel {
   static async byId(id: string) {

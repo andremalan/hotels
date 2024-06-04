@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-import { categorizeFacilities } from "./../../utilities/categorizeFacilities";
-import { Supplier } from "./../supplier";
-import { SupplierOutput } from "./../supplierService";
+import { categorizeFacilities } from "../../services/supplier/categorizeFacilities";
+import { Supplier, SupplierOutput } from "../supplier";
 
 const SupplierSchema = z.object({
   id: z.string(),

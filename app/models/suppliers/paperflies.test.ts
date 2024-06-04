@@ -89,7 +89,13 @@ describe("SupplierPaperfliesService", () => {
             "business center",
             "childcare",
           ],
-          room: ["tv", "coffee machine", "kettle", "hair dryer", "iron"],
+          room: [
+            "television",
+            "coffee machine",
+            "kettle",
+            "hair dryer",
+            "iron",
+          ],
         },
         images: {
           rooms: [

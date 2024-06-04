@@ -1,51 +1,11 @@
 import { Prisma } from "@prisma/client";
 
 import { prisma } from "~/db.server";
-
-import { ACMESupplier } from "./suppliers/acme";
-import { PaperfliesSupplier } from "./suppliers/paperflies";
-import { PatagoniaSupplier } from "./suppliers/patagonia";
-
-interface Location {
-  lat: number;
-  lng: number;
-  address: string;
-  city: string;
-  country: string;
-}
-
-interface Image {
-  link: string;
-  description: string;
-}
-
-interface Amenities {
-  general: string[];
-  room: string[];
-}
-
-export interface SupplierOutput {
-  id: string;
-  destination_id: number;
-  name: string;
-  location: Location;
-  description: string;
-  amenities: Amenities;
-  images: {
-    rooms: Image[];
-    site: Image[];
-    amenities: Image[];
-  };
-  booking_conditions: string[];
-}
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace PrismaJson {
-    // you can use classes, interfaces, types, etc.
-    type HotelData = SupplierOutput;
-  }
-}
+import { SupplierOutput } from "~/models/supplier";
+import { ACMESupplier } from "~/models/suppliers/acme";
+import { PaperfliesSupplier } from "~/models/suppliers/paperflies";
+import { PatagoniaSupplier } from "~/models/suppliers/patagonia";
+import { mergeHotels } from "~/services/supplier/mergeHotels";
 
 export class SupplierService {
   suppliers = [ACMESupplier, PatagoniaSupplier, PaperfliesSupplier];
@@ -53,9 +13,9 @@ export class SupplierService {
   async getTransformedData(): Promise<SupplierOutput[]> {
     const transformedData = await Promise.all(
       this.suppliers.map(async (supplier) => {
-        const service = new supplier();
-        const data = await service.fetchData();
-        return service.transformData(data);
+        const supplierInstance = new supplier();
+        const data = await supplierInstance.fetchData();
+        return supplierInstance.transformData(data);
       }),
     );
     return transformedData.flat();
@@ -83,5 +43,11 @@ export class SupplierService {
         },
       });
     }
+  }
+
+  async hotels() {
+    const hotels = await this.getTransformedData();
+    const mergedHotels = mergeHotels(hotels);
+    return mergedHotels;
   }
 }

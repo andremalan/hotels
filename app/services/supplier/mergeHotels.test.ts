@@ -1,4 +1,4 @@
-import { SupplierOutput } from "~/services/supplierService";
+import { SupplierOutput } from "~/models/supplier";
 
 import { mergeHotels } from "./mergeHotels";
 

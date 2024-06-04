@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { Supplier } from "./../supplier";
-import { SupplierOutput } from "./../supplierService";
+import { Supplier, SupplierOutput } from "~/models/supplier";
+import { normalizeFacility } from "~/services/supplier/categorizeFacilities";
 
 const SupplierSchema = z.object({
   hotel_id: z.string(),
@@ -54,7 +54,14 @@ export class PaperfliesSupplier extends Supplier {
         country: supplier.location.country,
       },
       description: supplier.details,
-      amenities: supplier.amenities,
+      amenities: {
+        general: supplier.amenities.general.map((amenity) =>
+          normalizeFacility(amenity),
+        ),
+        room: supplier.amenities.room.map((amenity) =>
+          normalizeFacility(amenity),
+        ),
+      },
       images: {
         rooms: supplier.images.rooms.map((image) => ({
           link: image.link,
