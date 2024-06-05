@@ -67,7 +67,7 @@ describe("SupplierService", () => {
             "pool",
             "business center",
             "wifi",
-            "dry cleaner",
+            "dry cleaning",
             "breakfast",
           ],
           room: ["air conditioner"],

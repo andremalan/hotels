@@ -1,7 +1,9 @@
 import { z } from "zod";
 
-import { categorizeFacilities } from "../../services/supplier/categorizeFacilities";
-import { Supplier, SupplierOutput } from "../supplier";
+import { Supplier } from "~/models/supplier";
+import { categorizeFacilities } from "~/services/supplier/categorizeFacilities";
+import { locationFormatter } from "~/services/supplier/formatters";
+import type { HotelData } from "~/types";
 
 const SupplierSchema = z.object({
   id: z.string(),
@@ -41,20 +43,19 @@ export class PatagoniaSupplier extends Supplier {
     "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/patagonia";
   protected schema = SupplierArraySchema;
 
-  transformData(
-    suppliers: z.infer<typeof SupplierArraySchema>,
-  ): SupplierOutput[] {
+  transformData(suppliers: z.infer<typeof SupplierArraySchema>): HotelData[] {
     return suppliers.map((supplier) => ({
       id: supplier.id,
       destination_id: supplier.destination,
       name: supplier.name,
-      location: {
-        lat: supplier.lat || 0,
-        lng: supplier.lng || 0,
-        address: supplier.address || "",
+      location: locationFormatter({
+        lat: supplier.lat,
+        lng: supplier.lng,
+        address: supplier.address,
         city: "",
         country: "",
-      },
+        postalCode: null,
+      }),
       description: supplier.info || "",
       amenities: categorizeFacilities(supplier.amenities || []),
       images: {

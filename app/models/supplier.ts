@@ -1,37 +1,6 @@
 import { z } from "zod";
 
-interface Location {
-  lat: number;
-  lng: number;
-  address: string;
-  city: string;
-  country: string;
-}
-
-interface Image {
-  link: string;
-  description: string;
-}
-
-interface Amenities {
-  general: string[];
-  room: string[];
-}
-
-export interface SupplierOutput {
-  id: string;
-  destination_id: number;
-  name: string;
-  location: Location;
-  description: string;
-  amenities: Amenities;
-  images: {
-    rooms: Image[];
-    site: Image[];
-    amenities: Image[];
-  };
-  booking_conditions: string[];
-}
+import type { HotelData } from "~/types";
 
 /**
  * Abstract class for suppliers. All suppliers should extend this class.
@@ -51,7 +20,7 @@ export abstract class Supplier {
   protected abstract url: string;
   protected abstract schema: z.ZodTypeAny;
 
-  abstract transformData(data: unknown): SupplierOutput[];
+  abstract transformData(data: unknown): HotelData[];
 
   async fetchData() {
     const response = await fetch(this.url);
@@ -62,7 +31,7 @@ export abstract class Supplier {
     return this.schema.parse(data);
   }
 
-  async getTransformedData(): Promise<SupplierOutput[]> {
+  async getTransformedData(): Promise<HotelData[]> {
     const data = await this.fetchData();
     return this.transformData(data);
   }

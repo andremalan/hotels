@@ -1,16 +1,7 @@
-import { prisma } from "~/db.server";
-import { SupplierOutput } from "~/models/supplier";
-import { mergeHotels } from "~/services/supplier/mergeHotels";
-import { SupplierService } from "~/services/supplierService";
+import { Prisma } from "@prisma/client";
 
-// Required to get JSON output typed correctly for Prisma.
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace PrismaJson {
-    // you can use classes, interfaces, types, etc.
-    type HotelData = SupplierOutput;
-  }
-}
+import { prisma } from "~/db.server";
+import { HotelData } from "~/types";
 
 export class Hotel {
   static async byId(id: string) {
@@ -39,11 +30,27 @@ export class Hotel {
     return result.map((hotel) => hotel.data);
   }
 
-  static async refreshData() {
-    const supplierService = new SupplierService();
-    const hotels = await supplierService.getTransformedData();
-    const mergedHotels = mergeHotels(hotels);
-    await supplierService.saveHotelsToDatabase(mergedHotels);
-    return mergedHotels;
+  static async upsert(hotel: HotelData) {
+    await prisma.hotel.upsert({
+      where: { id: hotel.id },
+      update: {
+        destinationId: hotel.destination_id,
+        name: hotel.name,
+        description: hotel.description,
+        updatedAt: new Date(),
+        // unforuntate typing hack due to poor Prisma support for JSON types.
+        data: hotel as unknown as Prisma.JsonObject,
+      },
+      create: {
+        id: hotel.id,
+        destinationId: hotel.destination_id,
+        name: hotel.name,
+        description: hotel.description,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+        // unforuntate typing hack due to poor Prisma support for JSON types.
+        data: hotel as unknown as Prisma.JsonObject,
+      },
+    });
   }
 }

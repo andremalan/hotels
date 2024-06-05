@@ -1,6 +1,9 @@
 export const normalizeFacility = (facility: string) => {
   // Convert to lowercase and replace camelCase with spaces
-  let normalized = facility.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+  let normalized = facility
+    .trim()
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .toLowerCase();
 
   // Replace shortened words with their full versions
   const replacements: Record<string, string> = {
@@ -9,10 +12,12 @@ export const normalizeFacility = (facility: string) => {
     tv: "television",
     coffeemachine: "coffee machine",
     hairdryer: "hair dryer",
-    drycleaner: "dry cleaner",
-    drycleaning: "dry cleaner",
-    "dry cleaning": "dry cleaner",
+    drycleaner: "dry cleaning",
+    drycleaning: "dry cleaning",
+    "dry cleaning": "dry cleaning",
+    "dry cleaner": "dry cleaning",
     "wi fi": "wifi",
+    "bath tub": "bathtub",
   };
 
   normalized = replacements[normalized] || normalized;

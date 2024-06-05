@@ -23,7 +23,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return json(hotels);
   }
 
-  await Hotel.refreshData();
   const allHotels = await Hotel.all();
   return json(allHotels);
 };

@@ -1,7 +1,9 @@
 import { z } from "zod";
 
-import { Supplier, SupplierOutput } from "~/models/supplier";
+import { Supplier } from "~/models/supplier";
 import { categorizeFacilities } from "~/services/supplier/categorizeFacilities";
+import { locationFormatter } from "~/services/supplier/formatters";
+import type { HotelData } from "~/types";
 
 const SupplierSchema = z.object({
   Id: z.string(),
@@ -23,20 +25,19 @@ export class ACMESupplier extends Supplier {
   protected url = "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/acme";
   protected schema = SupplierArraySchema;
 
-  transformData(
-    suppliers: z.infer<typeof SupplierArraySchema>,
-  ): SupplierOutput[] {
+  transformData(suppliers: z.infer<typeof SupplierArraySchema>): HotelData[] {
     return suppliers.map((supplier) => ({
       id: supplier.Id,
       destination_id: supplier.DestinationId,
       name: supplier.Name,
-      location: {
-        lat: Number(supplier.Latitude) || 0,
-        lng: Number(supplier.Longitude) || 0,
-        address: `${supplier.Address.trim()}, ${supplier.PostalCode}`,
+      location: locationFormatter({
+        lat: supplier.Latitude,
+        lng: supplier.Longitude,
+        address: supplier.Address,
+        postalCode: supplier.PostalCode,
         city: supplier.City,
-        country: supplier.Country === "SG" ? "Singapore" : supplier.Country,
-      },
+        country: supplier.Country,
+      }),
       description: supplier.Description,
       amenities: categorizeFacilities(supplier.Facilities),
       images: {

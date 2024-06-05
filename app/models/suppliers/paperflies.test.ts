@@ -74,8 +74,8 @@ describe("SupplierPaperfliesService", () => {
         destination_id: 5432,
         name: "Beach Villas Singapore",
         location: {
-          lat: 0,
-          lng: 0,
+          lat: null,
+          lng: null,
           address: "8 Sentosa Gateway, Beach Villas, 098269",
           city: "",
           country: "Singapore",

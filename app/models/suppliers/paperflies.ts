@@ -1,7 +1,9 @@
 import { z } from "zod";
 
-import { Supplier, SupplierOutput } from "~/models/supplier";
+import { Supplier } from "~/models/supplier";
 import { normalizeFacility } from "~/services/supplier/categorizeFacilities";
+import { locationFormatter } from "~/services/supplier/formatters";
+import type { HotelData } from "~/types";
 
 const SupplierSchema = z.object({
   hotel_id: z.string(),
@@ -39,20 +41,19 @@ export class PaperfliesSupplier extends Supplier {
   protected url =
     "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/paperflies";
   protected schema = SupplierArraySchema;
-  transformData(
-    suppliers: z.infer<typeof SupplierArraySchema>,
-  ): SupplierOutput[] {
+  transformData(suppliers: z.infer<typeof SupplierArraySchema>): HotelData[] {
     return suppliers.map((supplier) => ({
       id: supplier.hotel_id,
       destination_id: supplier.destination_id,
       name: supplier.hotel_name,
-      location: {
-        lat: 0, // Placeholder value as latitude is not provided
-        lng: 0, // Placeholder value as longitude is not provided
+      location: locationFormatter({
+        lat: null,
+        lng: null,
         address: supplier.location.address,
-        city: "", // Placeholder value as city is not provided
+        city: "",
         country: supplier.location.country,
-      },
+        postalCode: null,
+      }),
       description: supplier.details,
       amenities: {
         general: supplier.amenities.general.map((amenity) =>

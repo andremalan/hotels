@@ -1,6 +1,41 @@
 import { describe, it, expect } from "vitest";
 
-import { categorizeFacilities } from "./categorizeFacilities";
+import {
+  normalizeFacility,
+  categorizeFacilities,
+} from "./categorizeFacilities";
+
+describe("normalizeFacility", () => {
+  it("should normalize facility names correctly", () => {
+    const facilities = [
+      " Aircon ",
+      "TV",
+      "CoffeeMachine",
+      "HairDryer",
+      "DryCleaning",
+      "DryCleaner",
+      "wi fi",
+      "bath tub",
+      "BusinessCenter",
+    ];
+
+    const expected = [
+      "air conditioner",
+      "television",
+      "coffee machine",
+      "hair dryer",
+      "dry cleaning",
+      "dry cleaning",
+      "wifi",
+      "bathtub",
+      "business center",
+    ];
+
+    facilities.forEach((facility, index) => {
+      expect(normalizeFacility(facility)).toEqual(expected[index]);
+    });
+  });
+});
 
 describe("categorizeFacilities", () => {
   it("should categorize and normalize facilities correctly", () => {
@@ -31,8 +66,8 @@ describe("categorizeFacilities", () => {
         "pool",
         "business center",
         "wifi",
-        "dry cleaner",
-        "dry cleaner",
+        "dry cleaning",
+        "dry cleaning",
         "breakfast",
         "parking",
         "childcare",
@@ -68,8 +103,25 @@ describe("categorizeFacilities", () => {
     const result = categorizeFacilities(facilities);
 
     expect(result).toEqual({
-      general: ["dry cleaner", "dry cleaner", "dry cleaner"],
+      general: ["dry cleaning", "dry cleaning", "dry cleaning"],
       room: [],
+    });
+  });
+
+  it("should strip whitespace from facility names", () => {
+    const facilities = [
+      " Aircon ",
+      " TV ",
+      "CoffeeMachine  ",
+      " HairDryer",
+      " DryCleaning ",
+    ];
+
+    const result = categorizeFacilities(facilities);
+
+    expect(result).toEqual({
+      general: ["dry cleaning"],
+      room: ["air conditioner", "television", "coffee machine", "hair dryer"],
     });
   });
 });

@@ -1,19 +1,19 @@
-import { SupplierOutput } from "~/models/supplier";
+import type { HotelData } from "~/types";
 
 import { mergeHotels } from "./mergeHotels";
 
 describe("mergeHotels", () => {
   it("should merge hotels correctly", () => {
-    const hotels: SupplierOutput[] = [
+    const hotels: HotelData[] = [
       {
         id: "1",
         destination_id: 123,
         name: "Hotel A",
         location: {
-          lat: 1.0,
+          lat: null,
           lng: 1.0,
           address: "Address A",
-          city: "City A",
+          city: "City B",
           country: "Country A",
         },
         description: "Short description",
@@ -34,10 +34,10 @@ describe("mergeHotels", () => {
         name: "Hotel A",
         location: {
           lat: 1.0,
-          lng: 1.0,
+          lng: null,
           address: "Address A",
           city: "City A",
-          country: "Country A",
+          country: "",
         },
         description: "This is a longer description for Hotel A.",
         amenities: {
@@ -86,7 +86,7 @@ describe("mergeHotels", () => {
   });
 
   it("should handle hotels with no duplicates", () => {
-    const hotels: SupplierOutput[] = [
+    const hotels: HotelData[] = [
       {
         id: "1",
         destination_id: 123,

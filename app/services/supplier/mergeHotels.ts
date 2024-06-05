@@ -1,9 +1,7 @@
-import { SupplierOutput } from "~/models/supplier";
+import { HotelData } from "~/types";
 
-export function mergeHotels(
-  hotels: SupplierOutput[],
-): Record<string, SupplierOutput> {
-  const hotelMap: Record<string, SupplierOutput> = {};
+export function mergeHotels(hotels: HotelData[]): Record<string, HotelData> {
+  const hotelMap: Record<string, HotelData> = {};
 
   hotels.forEach((hotel) => {
     if (hotelMap[hotel.id]) {
@@ -14,6 +12,19 @@ export function mergeHotels(
       if (hotel.description.length > existingHotel.description.length) {
         existingHotel.description = hotel.description;
       }
+
+      // Merge locations (keep any existing fields and add any missing fields)
+
+      existingHotel.location.address =
+        hotel.location.address || existingHotel.location.address;
+      existingHotel.location.city =
+        hotel.location.city || existingHotel.location.city;
+      existingHotel.location.country =
+        hotel.location.country || existingHotel.location.country;
+      existingHotel.location.lat =
+        hotel.location.lat || existingHotel.location.lat;
+      existingHotel.location.lng =
+        hotel.location.lng || existingHotel.location.lng;
 
       // Merge amenities (remove duplicates)
       existingHotel.amenities.general = Array.from(
