@@ -7,8 +7,17 @@ interface LocationInfo {
   city: string;
   country: string;
 }
-
-export function locationFormatter({
+/**
+ * Deals with location complexities and differences.
+ * There's obviously a lot more that goes into actual location formatting,
+ * but this is the minimal needed to transfrom the example data into something reasonable.
+ *
+ * 1. trims the address
+ * 2. formats the address and postal code
+ * 3. normalizes the country name
+ *
+ */
+export function formatLocation({
   address,
   city,
   country,

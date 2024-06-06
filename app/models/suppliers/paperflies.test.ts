@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
 import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
 
-import { server } from "../../../mocks/server";
+import { server } from "~/../mocks/server";
 
 import { PaperfliesSupplier } from "./paperflies";
 

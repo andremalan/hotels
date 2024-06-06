@@ -1,10 +1,16 @@
-import { Hotel } from "~/models/hotel.server";
 import { ACMESupplier } from "~/models/suppliers/acme";
 import { PaperfliesSupplier } from "~/models/suppliers/paperflies";
 import { PatagoniaSupplier } from "~/models/suppliers/patagonia";
 import { mergeHotels } from "~/services/supplier/mergeHotels";
 import type { HotelData } from "~/types";
 
+/**
+ * Service to fetch, transform and merge data from all suppliers.
+ *
+ * one idea here might be to assign each one of these a "trust score" and then always choose the
+ * value of the most trusted supplier when merging data, but with the current data
+ * that seemed to be an over complication.
+ */
 export class SupplierService {
   static suppliers = [ACMESupplier, PatagoniaSupplier, PaperfliesSupplier];
 
@@ -17,12 +23,6 @@ export class SupplierService {
       }),
     );
     return transformedData.flat();
-  }
-  static async saveHotelsToDatabase(hotels: Record<string, HotelData>) {
-    for (const hotelId in hotels) {
-      const hotel = hotels[hotelId];
-      Hotel.upsert(hotel);
-    }
   }
 
   static async hotels() {

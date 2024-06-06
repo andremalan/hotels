@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import { Supplier } from "~/models/supplier";
-import { normalizeFacility } from "~/services/supplier/categorizeFacilities";
-import { locationFormatter } from "~/services/supplier/formatters";
+import { normalizeAmenity } from "~/services/supplier/categorizeAmenities";
+import { formatLocation } from "~/services/supplier/formatLocation";
 import type { HotelData } from "~/types";
 
 const SupplierSchema = z.object({
@@ -46,7 +46,7 @@ export class PaperfliesSupplier extends Supplier {
       id: supplier.hotel_id,
       destination_id: supplier.destination_id,
       name: supplier.hotel_name,
-      location: locationFormatter({
+      location: formatLocation({
         lat: null,
         lng: null,
         address: supplier.location.address,
@@ -57,10 +57,10 @@ export class PaperfliesSupplier extends Supplier {
       description: supplier.details,
       amenities: {
         general: supplier.amenities.general.map((amenity) =>
-          normalizeFacility(amenity),
+          normalizeAmenity(amenity),
         ),
         room: supplier.amenities.room.map((amenity) =>
-          normalizeFacility(amenity),
+          normalizeAmenity(amenity),
         ),
       },
       images: {

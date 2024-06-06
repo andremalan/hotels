@@ -10,11 +10,10 @@ import type { HotelData } from "~/types";
  * - url that defines the endpoint to fetch data from.
  * - schema that defines the schema of the data fetched.
  *
- * @abstract
- * @class Supplier
- * @method transformData
- * @method fetchData
- * @method getTransformedData
+ * The zod schema allows us to not only use the output with TypeScript easily,
+ * but also to validate the data we receive from the supplier. This way we could
+ * catch when suppliers change and have a system tha creates tickets to update our schema
+ * and ensure that we are never out of sync with the supplier.
  */
 export abstract class Supplier {
   protected abstract url: string;

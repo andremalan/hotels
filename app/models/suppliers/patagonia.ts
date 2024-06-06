@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import { Supplier } from "~/models/supplier";
-import { categorizeFacilities } from "~/services/supplier/categorizeFacilities";
-import { locationFormatter } from "~/services/supplier/formatters";
+import { categorizeAmenities } from "~/services/supplier/categorizeAmenities";
+import { formatLocation } from "~/services/supplier/formatLocation";
 import type { HotelData } from "~/types";
 
 const SupplierSchema = z.object({
@@ -48,7 +48,7 @@ export class PatagoniaSupplier extends Supplier {
       id: supplier.id,
       destination_id: supplier.destination,
       name: supplier.name,
-      location: locationFormatter({
+      location: formatLocation({
         lat: supplier.lat,
         lng: supplier.lng,
         address: supplier.address,
@@ -57,7 +57,7 @@ export class PatagoniaSupplier extends Supplier {
         postalCode: null,
       }),
       description: supplier.info || "",
-      amenities: categorizeFacilities(supplier.amenities || []),
+      amenities: categorizeAmenities(supplier.amenities || []),
       images: {
         rooms:
           supplier.images?.rooms?.map((room) => ({

@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import {
-  normalizeFacility,
-  categorizeFacilities,
-} from "./categorizeFacilities";
+import { normalizeAmenity, categorizeAmenities } from "./categorizeAmenities";
 
 describe("normalizeFacility", () => {
   it("should normalize facility names correctly", () => {
@@ -32,12 +29,12 @@ describe("normalizeFacility", () => {
     ];
 
     facilities.forEach((facility, index) => {
-      expect(normalizeFacility(facility)).toEqual(expected[index]);
+      expect(normalizeAmenity(facility)).toEqual(expected[index]);
     });
   });
 });
 
-describe("categorizeFacilities", () => {
+describe("categorizeAmenities", () => {
   it("should categorize and normalize facilities correctly", () => {
     const facilities = [
       "Aircon",
@@ -59,7 +56,7 @@ describe("categorizeFacilities", () => {
       "Concierge",
     ];
 
-    const result = categorizeFacilities(facilities);
+    const result = categorizeAmenities(facilities);
 
     expect(result).toEqual({
       general: [
@@ -89,7 +86,7 @@ describe("categorizeFacilities", () => {
   it("should categorize new facilities as general", () => {
     const facilities = ["Spa", "Gym", "Lounge"];
 
-    const result = categorizeFacilities(facilities);
+    const result = categorizeAmenities(facilities);
 
     expect(result).toEqual({
       general: ["spa", "gym", "lounge"],
@@ -98,12 +95,17 @@ describe("categorizeFacilities", () => {
   });
 
   it("should handle mixed case facilities and camelCase facilities", () => {
-    const facilities = ["DryCleaner", "DryCleaning", "dry cleaner"];
+    const facilities = [
+      "DryCleaner",
+      "DryCleaning",
+      "dry cleaner",
+      "someThing",
+    ];
 
-    const result = categorizeFacilities(facilities);
+    const result = categorizeAmenities(facilities);
 
     expect(result).toEqual({
-      general: ["dry cleaning", "dry cleaning", "dry cleaning"],
+      general: ["dry cleaning", "dry cleaning", "dry cleaning", "some thing"],
       room: [],
     });
   });
@@ -117,7 +119,7 @@ describe("categorizeFacilities", () => {
       " DryCleaning ",
     ];
 
-    const result = categorizeFacilities(facilities);
+    const result = categorizeAmenities(facilities);
 
     expect(result).toEqual({
       general: ["dry cleaning"],

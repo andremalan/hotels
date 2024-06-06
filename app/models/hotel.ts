@@ -14,6 +14,9 @@ export class Hotel {
   static async byIds(ids: string[]) {
     const result = await prisma.hotel.findMany({
       where: { id: { in: ids } },
+      orderBy: {
+        id: "asc",
+      },
     });
     return result.map((hotel) => hotel.data);
   }
@@ -21,12 +24,19 @@ export class Hotel {
   static async byDestination(destinationId: number) {
     const result = await prisma.hotel.findMany({
       where: { destinationId },
+      orderBy: {
+        id: "asc",
+      },
     });
     return result.map((hotel) => hotel.data);
   }
 
   static async all() {
-    const result = await prisma.hotel.findMany();
+    const result = await prisma.hotel.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
     return result.map((hotel) => hotel.data);
   }
 
@@ -52,5 +62,13 @@ export class Hotel {
         data: hotel as unknown as Prisma.JsonObject,
       },
     });
+  }
+
+  static async saveHotels(hotels: Record<string, HotelData>) {
+    // Prisma doesn't have a bulk upsert method, so we have to do this one by one.
+    for (const hotelId in hotels) {
+      const hotel = hotels[hotelId];
+      await this.upsert(hotel);
+    }
   }
 }

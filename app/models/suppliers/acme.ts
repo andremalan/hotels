@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 import { Supplier } from "~/models/supplier";
-import { categorizeFacilities } from "~/services/supplier/categorizeFacilities";
-import { locationFormatter } from "~/services/supplier/formatters";
+import { categorizeAmenities } from "~/services/supplier/categorizeAmenities";
+import { formatLocation } from "~/services/supplier/formatLocation";
 import type { HotelData } from "~/types";
 
 const SupplierSchema = z.object({
@@ -30,7 +30,7 @@ export class ACMESupplier extends Supplier {
       id: supplier.Id,
       destination_id: supplier.DestinationId,
       name: supplier.Name,
-      location: locationFormatter({
+      location: formatLocation({
         lat: supplier.Latitude,
         lng: supplier.Longitude,
         address: supplier.Address,
@@ -39,7 +39,7 @@ export class ACMESupplier extends Supplier {
         country: supplier.Country,
       }),
       description: supplier.Description,
-      amenities: categorizeFacilities(supplier.Facilities),
+      amenities: categorizeAmenities(supplier.Facilities),
       images: {
         rooms: [],
         site: [],

@@ -1,4 +1,15 @@
-export const normalizeFacility = (facility: string) => {
+/**
+ * Normallizes ammenities across the various suppliers, creating source of truth versions.
+ * Could probably apply machine learning to make this more robust over a large dataset but
+ * this is sufficient for the current data we have.
+ *
+ * 1. Converts to lowercase
+ * 2. Replaces camelCase with spaces
+ * 3. Replaces shortened words with full versions
+ * 4. Trims whitespace
+ *
+ */
+export const normalizeAmenity = (facility: string) => {
   // Convert to lowercase and replace camelCase with spaces
   let normalized = facility
     .trim()
@@ -25,7 +36,7 @@ export const normalizeFacility = (facility: string) => {
   return normalized;
 };
 
-export function categorizeFacilities(facilities: string[]): {
+export function categorizeAmenities(facilities: string[]): {
   general: string[];
   room: string[];
 } {
@@ -45,7 +56,7 @@ export function categorizeFacilities(facilities: string[]): {
   };
 
   facilities.forEach((facility) => {
-    const normalized = normalizeFacility(facility);
+    const normalized = normalizeAmenity(facility);
 
     if (roomFacilities.has(normalized)) {
       categorized.room.push(normalized);
