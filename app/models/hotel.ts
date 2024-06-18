@@ -1,9 +1,17 @@
 import { Prisma } from "@prisma/client";
 
 import { prisma } from "~/db.server";
+import { mergeHotels } from "~/services/supplier/mergeHotels";
 import { HotelData } from "~/types";
 
 export class Hotel {
+  static async LoadHotelsFromSupplierData() {
+    //query for all supplier data
+    // merge all records with same hotel id.
+    // save to db.
+    await this.saveHotels(hotels);
+  }
+
   static async byId(id: string) {
     const result = await prisma.hotel.findUnique({
       where: { id },
@@ -68,6 +76,18 @@ export class Hotel {
     // Prisma doesn't have a bulk upsert method, so we have to do this one by one.
     for (const hotelId in hotels) {
       const hotel = hotels[hotelId];
+      await this.upsert(hotel);
+    }
+  }
+
+  // this probably belongs in a new model for SupplierHotel
+  static async saveHotelsForSupplier(supplier: string, hotels: HotelData[]) {
+    for (const hotelId in hotels) {
+      const hotel = hotels[hotelId];
+      // first find hotel by id
+      // Upsert method would move to the supplierHotel model and upsert those.
+      // would also want upsert to create a "modified" data field so we can track when the data was last updated.
+      // and only perform a merge on updated data.
       await this.upsert(hotel);
     }
   }

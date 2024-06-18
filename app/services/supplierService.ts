@@ -1,3 +1,4 @@
+import { Supplier } from "~/models/supplier";
 import { ACMESupplier } from "~/models/suppliers/acme";
 import { PaperfliesSupplier } from "~/models/suppliers/paperflies";
 import { PatagoniaSupplier } from "~/models/suppliers/patagonia";
@@ -18,11 +19,31 @@ export class SupplierService {
     const transformedData = await Promise.all(
       this.suppliers.map(async (supplier) => {
         const supplierInstance = new supplier();
-        const data = await supplierInstance.fetchData();
-        return supplierInstance.transformData(data);
+        try {
+          const data = await supplierInstance.fetchData();
+          return supplierInstance.transformData(data);
+        } catch (error) {
+          console.error(
+            `Error fetching data from supplier: ${supplier.name}`,
+            error,
+          );
+          return [];
+        }
       }),
     );
     return transformedData.flat();
+  }
+
+  static async hotelsForSupplier(supplierId: string) {
+    // need a way to get a supplier by id. Should convert the array above into a map.
+    const supplier = this.suppliers.find((s) => s.id === supplierId);
+    const supplierInstance = new supplier();
+    try {
+      const data = await supplierInstance.fetchData();
+      return supplierInstance.transformData(data);
+    } catch (error) {
+      console.error(`Error fetching data from supplier`, error);
+    }
   }
 
   static async hotels() {

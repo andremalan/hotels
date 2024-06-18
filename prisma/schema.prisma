@@ -14,6 +14,25 @@ generator json {
   // (./ -> relative to schema, or an importable path to require() it)
 }
 
+// Saving things by supplier will give us a lot more flexibility
+// over when/how to merge.
+model SupplierHotel {
+  id            String    @id @default(cuid())
+  hotelId       String
+  supplierId    Int
+  trustScore    Int
+  name          String
+  description   String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  /// [SupplierHotelData]
+  data          Json
+
+  @@index([id])
+  @@index([supplierId])
+
+}
+
 model Hotel {
   id            String    @id @default(cuid())
   destinationId Int

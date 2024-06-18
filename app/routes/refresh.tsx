@@ -8,7 +8,10 @@ import { SupplierService } from "~/services/supplierService";
  * we can have it be a GET request to make validating from the browser easier.
  */
 export const loader = async () => {
+  //get supplier id from query param
+  const supplierId = "acme";
   const hotels = await SupplierService.hotels();
+  await SupplierService.hotelsForSupplier(supplierId);
   Hotel.saveHotels(hotels);
   return json(hotels);
 };
